@@ -8,8 +8,10 @@ def test_1():
               'year': [2015, 2015],
               'session_id': [17357, 10011]}
 
-    logins_df = pd.DataFrame.from_dict(logins)
+    logins_df = pd.DataFrame(logins)
+    print(logins_df, '\n')
 
+    # add 'month' to the DataFrame and give it the value of 'MONTH' at index j
     for j, p in logins_df.iterrows():
         logins_df.loc[j, 'month'] = p['MONTH'].lower()
 
@@ -21,7 +23,7 @@ def test_2():
                  'Views': [1000, 1200, 800, 1500],
                  'Clicks': [300, 800, 500, 990]}
 
-    marketing_df = pd.DataFrame.from_dict(marketing)
+    marketing_df = pd.DataFrame(marketing)
 
     print(marketing_df)
 
@@ -36,5 +38,5 @@ def test_3():
     print(df[np.invert(df['group'] == 'fruit')])
 
 
-test_3()
+test_2()
 
