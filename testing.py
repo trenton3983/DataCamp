@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 
 
 def test_1():
@@ -25,4 +26,15 @@ def test_2():
     print(marketing_df)
 
 
-test_2()
+def test_3():
+    group = ['fruit', 'fruit', 'fruit', 'vegetable', 'vegetable', 'vegetable']
+    name = ['apple', 'banana', 'oragne', 'broccoli', 'kale', 'lettuce']
+    count = [90, 150, 130, 80, 70, 125]
+    prod_dict = {'group': group, 'name': name, 'count': count}
+    df = pd.DataFrame(prod_dict)
+    print(df, '\n')
+    print(df[np.invert(df['group'] == 'fruit')])
+
+
+test_3()
+
