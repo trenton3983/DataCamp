@@ -320,3 +320,93 @@ print(result_shout_echo)
 print('\nBring it all together!\n')
 
 
+def ex_7(df):
+    # Select retweets from the Twitter DataFrame: result
+    result_ex_7 = filter(lambda x: x[0:2] == 'RT', df['text'])
+
+    # Create list from filter object result: res_list
+    res_list = list(result_ex_7)
+
+    # Print all retweets in res_list
+    for tweet in res_list:
+        print(tweet)
+
+
+print('\nResults of ex_7')
+ex_7(tweets_df)
+
+
+def count_entries_4(df, col_name='lang'):
+    """Return a dictionary with counts of
+    occurrences as value for each key."""
+
+    # Initialize an empty dictionary: cols_count
+    cols_count = {}
+
+    # Add try block
+    try:
+        # Extract column from DataFrame: col
+        col = df[col_name]
+
+        # Iterate over the column in dataframe
+        for entry in col:
+
+            # If entry is in cols_count, add 1
+            if entry in cols_count.keys():
+                cols_count[entry] += 1
+            # Else add the entry to cols_count, set the value to 1
+            else:
+                cols_count[entry] = 1
+
+        # Return the cols_count dictionary
+        return cols_count
+
+    # Add except block
+    except KeyError:
+        print('The DataFrame does not have a ' + col_name + ' column.')
+
+
+print('\nResults of count_entries_4')
+# Call count_entries(): result1
+result1 = count_entries_4(tweets_df, 'lang')
+
+# Print result1
+print(result1)
+
+# Call count_entries(): result2
+result2 = count_entries_4(tweets_df, 'lang1')
+print(result2)
+
+
+def count_entries_5(df, col_name='lang'):
+    """Return a dictionary with counts of
+    occurrences as value for each key."""
+
+    # Raise a ValueError if col_name is NOT in DataFrame
+    if col_name not in df.columns:
+        raise ValueError('The DataFrame does not have a ' + col_name + ' column.')
+
+    # Initialize an empty dictionary: cols_count
+    cols_count = {}
+
+    # Extract column from DataFrame: col
+    col = df[col_name]
+
+    # Iterate over the column in DataFrame
+    for entry in col:
+
+        # If entry is in cols_count, add 1
+        if entry in cols_count.keys():
+            cols_count[entry] += 1
+            # Else add the entry to cols_count, set the value to 1
+        else:
+            cols_count[entry] = 1
+
+        # Return the cols_count dictionary
+    return cols_count
+
+
+print('\nResults of count_entries_5')
+# Call count_entries(): result1
+result1 = count_entries_5(tweets_df)
+print(result1)
