@@ -15,6 +15,7 @@ mutants_tuple = ('charles xavier', 'bobby drake', 'kurt wagner', 'max eisenhardt
 aliases = ['prof x', 'iceman', 'nightcrawler', 'magneto', 'shadowcat']
 powers = ['telepathy', 'thermokinesis', 'teleportation', 'magnetokinesis', 'intangibility']
 powers_tuple = ('telepathy', 'thermokinesis', 'teleportation', 'magnetokinesis', 'intangibility')
+fellowship = ['frodo', 'samwise', 'merry', 'aragorn', 'legolas', 'boromir', 'gimli']
 
 
 def lesson_enumerate():
@@ -202,7 +203,8 @@ print(result_counts)
 #   * Iterable
 #   * Iterator variable (represent members of iterable)
 #   * Output expression
-
+#
+# https://www.datacamp.com/community/tutorials/python-list-comprehension
 
 def lesson_nested():
     pairs_2 = [(num1, num2) for num1 in range(0, 2) for num2 in range(6, 8)]
@@ -241,6 +243,21 @@ def lesson_comp_dict():
 print('\nOutput for lesson_comp_dict:')
 lesson_comp_dict()
 
+
+def ex_6():
+    print('https://www.datacamp.com/community/tutorials/python-list-comprehension')
+    # Create a list of strings: fellowship -> at the top
+    # Create list comprehension: new_fellowship
+    new_fellowship_if = [member for member in fellowship if len(member) >= 7]
+    new_fellowship_if_else_ = [member if len(member) >= 7 else '' for member in fellowship]
+
+    # Print the new list
+    print(new_fellowship_if)
+    print(new_fellowship_if_else_)
+
+
+print('\nOutput for ex_6:')
+ex_6()
 
 # Bring it all Together!
 
