@@ -6,6 +6,9 @@ import pandas as pd
 import pickle
 from sas7bdat import SAS7BDAT
 import h5py
+import scipy.io
+from sqlalchemy import create_engine
+
 
 pd.options.display.max_columns = 27
 
@@ -430,6 +433,104 @@ def lesson_3():
     plt.show()
 
 
+def lesson_4_matlab_files():
+    """
+    keys = MATLAB variable names
+    values = objects assigned to variables
+    The structure of .mat in Python
+    Here, you'll discover what is in the MATLAB dictionary that you loaded in the previous exercise.
+
+    The file 'albeck_gene_expression.mat' is already loaded into the variable mat. The following libraries have already
+    been imported as follows:
+
+    import scipy.io
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    Once again, this file contains gene expression data from the Albeck Lab at UCDavis.
+    :return:
+    """
+    print('Data and Documentation: https://www.mcb.ucdavis.edu/faculty-labs/albeck/workshop.htm')
+
+    # import scipy.io -> at the top
+    file = Path(__file__).parents[0].joinpath('data/albeck_gene_expression.mat')
+    mat = scipy.io.loadmat(file)
+    print(type(mat), '\n')
+
+    # Print the keys of the MATLAB dictionary
+    print('Keys:\n', mat.keys())
+
+    # Print the type of the value corresponding to the key 'CYratioCyt'
+    print('\nType:', type(mat['CYratioCyt']))
+
+    # Print the shape of the value corresponding to the key 'CYratioCyt'
+    print('\nShape:', np.shape(mat['CYratioCyt']))
+
+    # Subset the array and plot it
+    data = mat['CYratioCyt'][25, 5:]
+    fig = plt.figure()
+    plt.plot(data)
+    plt.xlabel('time (min.)')
+    plt.ylabel('normalized fluorescence (measure of expression)')
+    plt.show()
+
+
+# Introduction to Relational Databases
+
+def lesson_5_sql():
+    """
+    Creating a database engine
+    Here, you're going to fire up your very first SQL engine. You'll create an engine to connect to the SQLite database
+    'Chinook.sqlite', which is in your working directory. Remember that to create an engine to connect to
+    'Northwind.sqlite', Hugo executed the command
+
+    engine = create_engine('sqlite:///Northwind.sqlite')
+    Here, 'sqlite:///Northwind.sqlite' is called the connection string to the SQLite database Northwind.sqlite. A little
+    bit of background on the Chinook database: the Chinook database (https://archive.codeplex.com/?p=chinookdatabase)
+    contains information about a semi-fictional digital media store in which media data is real and customer, employee
+    and sales data has been manually created.
+
+    Workflow:
+    * Import packages and functions
+    * Create the database engine
+    * Connect to the engine
+    * Query the database
+    * Save query results to a DataFrame
+    * Close the connection
+    :return:
+    """
+    print('Chinook Database: https://archive.codeplex.com/?p=chinookdatabase')
+    # from sqlalchemy import create_engine -> imports at top
+    # engine = create_engine('sqlite:///Northwind.db3')  # http://nucleonsoftware.com/download/SQLiteNorthwind.zip
+    engine = create_engine('sqlite:///Chinook.sqlite')
+
+    print('\nTable Names:')
+    table_names = engine.table_names()
+    print(table_names)
+
+    print('\nCreate Connection with context manager:')
+    with engine.connect() as con:  # replaces con = engine.connect() & no longer requires con.close()
+
+        print('\nQuerying:')
+        # rs = con.execute('SELECT * FROM Orders')  # if using Northwind.db3
+        # rs = con.execute('SELECT * FROM Album')  # if using Chinook.sqlite
+        # rs = con.execute('SELECT LastName, Title FROM Employee')  # if using Chinook.sqlite
+        # print('Filter using WHERE:')
+        # rs = con.execute('SELECT * FROM Employee WHERE EmployeeId >= 6')  # if using Chinook.sqlite
+        print('Order results with ORDER BY:')
+        rs = con.execute('SELECT * FROM Employee ORDER BY BirthDate ASC')  # if using Chinook.sqlite
+
+        df = pd.DataFrame(rs.fetchall())
+        # df = pd.DataFrame(rs.fetchmany(size=5))  # alternative to previous line
+        print(df.head())
+
+        print('\nFix Column Headers:')
+        df.columns = rs.keys()
+        print(df.head())
+
+
+
+
 if __name__ == '__main__':
 
     # print('\nOutput of ex_1:')
@@ -477,5 +578,11 @@ if __name__ == '__main__':
     # print('\nOutput of ex_12 - Importing Stata files:')
     # ex_12()
 
-    print('\nOutput of lesson_3 - Using h5py to import HDF5 files - LIGO Data:')
-    lesson_3()
+    # print('\nOutput of lesson_3 - Using h5py to import HDF5 files - LIGO Data:')
+    # lesson_3()
+
+    # print('\nOutput of lesson_4_matlab_files - Working with MATLAB files:')
+    # lesson_4_matlab_files()
+
+    print('\nOutput of lesson_5_sql - Working with SQL:')
+    lesson_5_sql()
