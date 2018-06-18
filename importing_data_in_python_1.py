@@ -4,8 +4,10 @@ from pprint import pprint as pp
 from pathlib import Path
 import pandas as pd
 import pickle
+from sas7bdat import SAS7BDAT
+import h5py
 
-pd.options.display.max_columns = 15
+pd.options.display.max_columns = 27
 
 # Introduction to flat files:
 
@@ -326,6 +328,108 @@ def ex_10():
     print(df2.head())
 
 
+def ex_11():
+    """
+    Importing SAS files
+    In this exercise, you'll figure out how to import a SAS file as a DataFrame using SAS7BDAT and pandas. The file
+    'sales.sas7bdat' is already in your working directory and both pandas and matplotlib.pyplot have already been
+    imported as follows:
+
+    import pandas as pd
+    import matplotlib.pyplot as plt
+
+    The data are adapted from the website of the undergraduate text book Principles of Economics by Hill, Griffiths
+    and Lim.
+    :return:
+    """
+    # from sas7bdat import SAS7BDAT -> at the top with the imports
+
+    # Save file to a DataFrame: df_sas
+    with SAS7BDAT('sales.sas7bdat') as file:
+        df_sas = file.to_data_frame()
+
+    # Print head of DataFrame
+    print(df_sas.head())
+
+    # Plot histogram of DataFrame features (pandas and pyplot already imported)
+    pd.DataFrame.hist(df_sas[['P']])
+    plt.ylabel('count')
+    plt.show()
+
+
+def ex_12():
+    """
+    Here, you'll gain expertise in importing Stata files as DataFrames using the pd.read_stata() function from pandas.
+    The last exercise's file, 'disarea.dta', is still in your working directory.
+    :return:
+    """
+    file = Path(__file__).parents[0].joinpath('data/disarea.dta')
+    # Load Stata file into a pandas DataFrame: df
+    df = pd.read_stata(file)
+
+    # Print the head of the DataFrame df
+    print(df.head())
+
+    # Plot histogram of one column of the DataFrame
+    pd.DataFrame.hist(df[['disa10']])
+    plt.xlabel('Extent of disease')
+    plt.ylabel('Number of coutries')
+    plt.show()
+
+
+def lesson_3():
+    """
+    HDF5 - hierarchical data format version 5
+    Using h5py to import HDF5 files
+    The file 'LIGO_data.hdf5' is already in your working directory. In this exercise, you'll import it using the h5py
+    library. You'll also print out its datatype to confirm you have imported it correctly. You'll then study the
+    structure of the file in order to see precisely what HDF groups it contains.
+
+    https://losc.ligo.org/events/GW150914/
+    https://losc.ligo.org/s/events/GW150914/GW150914_tutorial.html
+
+    You can find the LIGO data plus loads of documentation and tutorials here. There is also a great tutorial on Signal
+    Processing with the data here.
+    :return:
+    """
+    print('https://losc.ligo.org/events/GW150914/')
+    print('https://losc.ligo.org/s/events/GW150914/GW150914_tutorial.html')
+
+    file = Path(__file__).parents[0].joinpath('data/LIGO_data.hdf5')
+    data = h5py.File(file, 'r')
+    print(type(data))
+
+    # Structure
+    for key in data.keys():
+        print('Key: ', key)
+
+    print('\nMeta:')
+    print(type(data['meta']))
+    for key in data['meta'].keys():
+        print('Key: ', key)
+
+    print('\nDescription:\n', data['meta']['Description'].value, '\nDetector:\n', data['meta']['Detector'].value)
+
+    print('\nStrain:\n', data['strain'])
+    for key in data['strain'].keys():
+        print('Key: ', key)
+
+    strain = data['strain']['Strain'].value
+    print('\nStrain Value:\n', strain)
+
+    # Set number of time points to sample: num_samples
+    num_samples = 10000
+
+    # Set time vector
+    time = np.arange(0, 1, 1 / num_samples)
+
+    # Plot data
+    plt.plot(time, strain[:num_samples])
+    plt.xlabel('GPS Time (s)')
+    plt.ylabel('strain')
+    plt.show()
+
+
 if __name__ == '__main__':
 
     # print('\nOutput of ex_1:')
@@ -364,5 +468,14 @@ if __name__ == '__main__':
     # print('\nOutput of ex_9:')
     # ex_9()
 
-    print('\nOutput of ex_10:')
-    ex_10()
+    # print('\nOutput of ex_10:')
+    # ex_10()
+
+    # print('\nOutput of ex_11 - Importing SAS files:')
+    # ex_11()
+
+    # print('\nOutput of ex_12 - Importing Stata files:')
+    # ex_12()
+
+    print('\nOutput of lesson_3 - Using h5py to import HDF5 files - LIGO Data:')
+    lesson_3()
