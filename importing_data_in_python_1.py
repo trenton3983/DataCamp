@@ -529,6 +529,45 @@ def lesson_5_sql():
         print(df.head())
 
 
+def lesson_6_sql_df():
+    """
+    Pandas and The Hello World of SQL Queries!
+    Here, you'll take advantage of the power of pandas to write the results of your SQL query to a DataFrame in one
+    swift line of Python code!
+
+    You'll first import pandas and create the SQLite 'Chinook.sqlite' engine. Then you'll query the database to select
+    all records from the Album table.
+
+    Recall that to select all records from the Orders table in the Northwind database, Hugo executed the following
+    command:
+
+    df = pd.read_sql_query("SELECT * FROM Orders", engine)
+
+    :return:
+    """
+    # from sqlalchemy import create_engine -> imports at top
+
+    # Create engine: engine
+    engine = create_engine('sqlite:///Chinook.sqlite')
+
+    # Execute query and store records in DataFrame: df
+    df = pd.read_sql_query("SELECT * FROM Album", engine)
+    print('\nDataFrame - Album:\n', df.head())
+    df2 = pd.read_sql_query('SELECT * FROM Employee WHERE EmployeeId >= 6 ORDER BY BirthDate ASC', engine)
+    print('\nDataFrame 2 - Employee:\n', df2)
+
+    # Print head of DataFrame
+    print(df.head())
+
+    # Open engine in context manager
+    # Perform query and save results to DataFrame: df1
+    with engine.connect() as con:
+        rs = con.execute("SELECT * FROM Album")
+        df1 = pd.DataFrame(rs.fetchall())
+        df1.columns = rs.keys()
+
+    # Confirm that both methods yield the same result: does df = df1 ?
+    print('\nDoes the Pandas DF query == the query produced by the context manager?: ', df.equals(df1))
 
 
 if __name__ == '__main__':
@@ -584,5 +623,8 @@ if __name__ == '__main__':
     # print('\nOutput of lesson_4_matlab_files - Working with MATLAB files:')
     # lesson_4_matlab_files()
 
-    print('\nOutput of lesson_5_sql - Working with SQL:')
-    lesson_5_sql()
+    # print('\nOutput of lesson_5_sql - Working with SQL:')
+    # lesson_5_sql()
+
+    print('\nOutput of lesson_6_sql_df - Working with SQL:')
+    lesson_6_sql_df()
