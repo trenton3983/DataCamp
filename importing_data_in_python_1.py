@@ -570,6 +570,53 @@ def lesson_6_sql_df():
     print('\nDoes the Pandas DF query == the query produced by the context manager?: ', df.equals(df1))
 
 
+def lesson_7_sql_join():
+    """
+    INNER JOIN in Python (pandas)
+
+    The power of SQL lies in relationships between tables: INNER JOIN
+    Here, you'll perform your first INNER JOIN! You'll be working with your favourite SQLite database, Chinook.sqlite.
+    For each record in the Album table, you'll extract the Title along with the Name of the Artist. The latter will come
+    from the Artist table and so you will need to INNER JOIN these two tables on the ArtistID column of both.
+
+    Recall that to INNER JOIN the Orders and Customers tables from the Northwind database, Hugo executed the following
+    SQL query:
+
+    "SELECT OrderID, CompanyName FROM Orders INNER JOIN Customers on Orders.CustomerID = Customers.CustomerID"
+
+    The following code has already been executed to import the necessary packages and to create the engine:
+
+    import pandas as pd
+    from sqlalchemy import create_engine
+    engine = create_engine('sqlite:///Chinook.sqlite')
+
+    :return:
+    """
+    engine1 = create_engine('sqlite:///Northwind.db3')
+    df = pd.read_sql_query('SELECT OrderID, CompanyName FROM Orders INNER JOIN '
+                           'Customers ON Orders.CustomerID = Customers.CustomerID', engine1)
+
+    print('\nNorthwind DB:')
+    print(df.head(15))
+
+    print('\nChinook DB:\n')
+    engine2 = create_engine('sqlite:///Chinook.sqlite')
+    # Perform query and save results to DataFrame: df
+    with engine2.connect() as con:
+        rs = con.execute("SELECT Title, Name FROM Album INNER JOIN Artist ON Album.ArtistID = Artist.ArtistID")
+        df = pd.DataFrame(rs.fetchall())
+        df.columns = rs.keys()
+
+    # Print head of DataFrame df
+    print(df.head())
+
+    print('\nChinook DB Query 2 with Pandas DF:')
+    engine3 = create_engine('sqlite:///Chinook.sqlite')
+    df3 = pd.read_sql_query('SELECT * FROM PlaylistTrack INNER JOIN '
+                            'Track ON PlaylistTrack.TrackID = Track.TrackID WHERE Milliseconds < 250000', engine3)
+    print(df3.head())
+
+
 if __name__ == '__main__':
 
     # print('\nOutput of ex_1:')
@@ -626,5 +673,8 @@ if __name__ == '__main__':
     # print('\nOutput of lesson_5_sql - Working with SQL:')
     # lesson_5_sql()
 
-    print('\nOutput of lesson_6_sql_df - Working with SQL:')
-    lesson_6_sql_df()
+    # print('\nOutput of lesson_6_sql_df - Working with SQL:')
+    # lesson_6_sql_df()
+
+    print('\nOutput of lesson_7_sql_join - Working with SQL:')
+    lesson_7_sql_join()
