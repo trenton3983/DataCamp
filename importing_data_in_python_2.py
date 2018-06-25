@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 from pprint import pprint as pp
 from pathlib import Path
 import pandas as pd
-from urllib.request import urlretrieve
+from urllib.request import urlretrieve, urlopen, Request
+import requests
+from bs4 import BeautifulSoup
 
 
 pd.options.display.max_columns = 27
@@ -100,6 +102,107 @@ def ex_3_red_wine_excel():
     print(xl['1700'].head())
 
 
+def ex_4_urlopen():
+    """
+    Performing HTTP requests in Python using urllib
+    Now that you know the basics behind HTTP GET requests, it's time to perform some of your own. In this interactive
+    exercise, you will ping our very own DataCamp servers to perform a GET request to extract information from our teach
+    page, "http://www.datacamp.com/teach/documentation".
+
+    In the next exercise, you'll extract the HTML itself. Right now, however, you are going to package and send the
+    request and then catch the response.
+    :return:
+    """
+    # Specify the url
+    url = "http://www.datacamp.com/teach/documentation"
+
+    # This packages the request: request
+    request = Request(url)
+
+    # Sends the request and catches the response: response
+    response = urlopen(request)
+
+    # Print the datatype of response
+    print(type(response))
+
+    # Be polite and close the response!
+    response.close()
+
+
+def ex_5_print_html():
+    """
+    Printing HTTP request results in Python using urllib
+    You have just packaged and sent a GET request to "http://www.datacamp.com/teach/documentation" and then caught the
+    response. You saw that such a response is a http.client.HTTPResponse object. The question remains: what can you do
+    with this response?
+
+    Well, as it came from an HTML page, you could read it to extract the HTML and, in fact, such a
+    http.client.HTTPResponse object has an associated read() method. In this exercise, you'll build on your previous
+    great work to extract the response and print the HTML.
+    :return:
+    """
+    # Specify the url
+    url = "http://www.datacamp.com/teach/documentation"
+
+    # This packages the request
+    request = Request(url)
+
+    # Sends the request and catches the response: response
+    response = urlopen(request)
+
+    # Extract the response: html
+    html = response.read()
+
+    # Print the html
+    pp(html)
+
+    # Be polite and close the response!
+    response.close()
+
+
+def ex_6_requests():
+    """
+    Performing HTTP requests in Python using requests
+    Now that you've got your head and hands around making HTTP requests using the urllib package, you're going to figure
+    out how to do the same using the higher-level requests library. You'll once again be pinging DataCamp servers for
+    their "http://www.datacamp.com/teach/documentation" page.
+
+    Note that unlike in the previous exercises using urllib, you don't have to close the connection when using requests!
+    :return:
+    """
+    # Import package
+    # import requests  # -> imported at the top
+
+    # Specify the url: url
+    url = 'http://www.datacamp.com/teach/documentation'
+
+    # Packages the request, send the request and catch the response: r
+    r = requests.get(url)
+
+    # Extract the response: text
+    text = r.text
+
+    # Print the html
+    pp(text)
+
+
+def lesson_2_beautiful_soup():
+    """
+    Explore BeautifulSoup and some of its methods
+    :return:
+    """
+    url = 'https://www.crummy.com/software/BeautifulSoup'
+    r = requests.get(url)
+    html_doc = r.text
+    soup = BeautifulSoup(html_doc, 'lxml')
+    print(soup.prettify())
+    print('\nTitle:\n', soup.title)
+    print('\nText:\n', soup.get_text())
+    print('\nLinks:')
+    for link in soup.find_all('a'):
+        print(link.get('href'))
+
+
 if __name__ == '__main__':
 
     # print('\nOutput of lesson_1_files_from_web:')
@@ -111,5 +214,17 @@ if __name__ == '__main__':
     # print('\nOutput of ex_2_red_wine_pd:')
     # ex_2_red_wine_pd()
 
-    print('\nOutput of ex_3_red_wine_excel:')
-    ex_3_red_wine_excel()
+    # print('\nOutput of ex_3_red_wine_excel:')
+    # ex_3_red_wine_excel()
+
+    # print('\nOutput of ex_4_urlopen:')
+    # ex_4_urlopen()
+
+    # print('\nOutput of ex_5_print_html:')
+    # ex_5_print_html()
+
+    # print('\nOutput of ex_6_requests:')
+    # ex_6_requests()
+
+    print('\nOutput of lesson_2_beautiful_soup:')
+    lesson_2_beautiful_soup()
