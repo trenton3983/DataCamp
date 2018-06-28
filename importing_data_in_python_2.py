@@ -335,6 +335,18 @@ def ex_10_json():
         print(k + ': ', json_data[k])
 
 
+def lesson_4_api():
+    """
+
+    :return:
+    """
+    url = 'http://www.omdbapi.com/?t=hackers&apikey='
+    r = requests.get(url)
+    json_data = r.json()
+    for k, v in json_data.items():
+        print(f'{k}: {v}')
+
+
 if __name__ == '__main__':
 
     # print('\nOutput of lesson_1_files_from_web:')
@@ -373,5 +385,8 @@ if __name__ == '__main__':
     # print('\nOutput of lesson_3_json:')
     # lesson_3_json()
 
-    print('\nOutput of ex_10_json:')
-    ex_10_json()
+    # print('\nOutput of ex_10_json:')
+    # ex_10_json()
+
+    print('\nOutput of lesson_4_api:')
+    lesson_4_api()
