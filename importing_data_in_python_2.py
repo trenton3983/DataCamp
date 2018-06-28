@@ -203,6 +203,103 @@ def lesson_2_beautiful_soup():
         print(link.get('href'))
 
 
+def ex_7_parsing_html_bs():
+    """
+    Parsing HTML with BeautifulSoup
+    In this interactive exercise, you'll learn how to use the BeautifulSoup package to parse, prettify and extract
+    information from HTML. You'll scrape the data from the webpage of Guido van Rossum, Python's very own Benevolent
+    Dictator for Life (https://en.wikipedia.org/wiki/Benevolent_dictator_for_life). In the following exercises, you'll
+    prettify the HTML and then extract the text and the hyperlinks.
+
+    The URL of interest is url = 'https://www.python.org/~guido/'.
+    :return:
+    """
+    # Import packages
+    # import requests  -> imported above
+    # from bs4 import BeautifulSoup  -> imported above
+
+    # Specify url: url
+    url = 'https://www.python.org/~guido/'
+
+    # Package the request, send the request and catch the response: r
+    r = requests.get(url)
+
+    # Extracts the response as html: html_doc
+    html_doc = r.text
+
+    # Create a BeautifulSoup object from the HTML: soup
+    soup = BeautifulSoup(html_doc, 'lxml')
+
+    # Prettify the BeautifulSoup object: pretty_soup
+    pretty_soup = soup.prettify()
+
+    # Print the response
+    pp(pretty_soup)
+
+
+def ex_8_getting_text_bs():
+    """
+    Turning a webpage into data using BeautifulSoup: getting the text
+    As promised, in the following exercises, you'll learn the basics of extracting information from HTML soup. In this
+    exercise, you'll figure out how to extract the text from the BDFL's webpage, along with printing the webpage's
+    title.
+    :return:
+    """
+    # Specify url: url
+    url = 'https://www.python.org/~guido/'
+
+    # Package the request, send the request and catch the response: r
+    r = requests.get(url)
+
+    # Extract the response as html: html_doc
+    html_doc = r.text
+
+    # Create a BeautifulSoup object from the HTML: soup
+    soup = BeautifulSoup(html_doc, 'lxml')
+
+    # Get the title of Guido's webpage: guido_title
+    guido_title = soup.title
+
+    # Print the title of Guido's webpage to the shell
+    print(guido_title)
+
+    # Get Guido's text: guido_text
+    guido_text = soup.get_text()
+
+    # Print Guido's text to the shell
+    print(guido_text)
+
+
+def ex_9_hyperlinks_bs():
+    """
+    Turning a webpage into data using BeautifulSoup: getting the hyperlinks
+    In this exercise, you'll figure out how to extract the URLs of the hyperlinks from the BDFL's webpage. In the
+    process, you'll become close friends with the soup method find_all().
+    :return:
+    """
+    # Specify url
+    url = 'https://www.python.org/~guido/'
+
+    # Package the request, send the request and catch the response: r
+    r = requests.get(url)
+
+    # Extracts the response as html: html_doc
+    html_doc = r.text
+
+    # create a BeautifulSoup object from the HTML: soup
+    soup = BeautifulSoup(html_doc, 'lxml')
+
+    # Print the title of Guido's webpage
+    print(soup.title)
+
+    # Find all 'a' tags (which define hyperlinks): a_tags
+    a_tags = soup.find_all('a')
+
+    # Print the URLs to the shell
+    for link in a_tags:
+        print(link.get('href'))
+
+
 if __name__ == '__main__':
 
     # print('\nOutput of lesson_1_files_from_web:')
@@ -226,5 +323,15 @@ if __name__ == '__main__':
     # print('\nOutput of ex_6_requests:')
     # ex_6_requests()
 
-    print('\nOutput of lesson_2_beautiful_soup:')
-    lesson_2_beautiful_soup()
+    # print('\nOutput of lesson_2_beautiful_soup:')
+    # lesson_2_beautiful_soup()
+
+    # print('\nOutput of ex_7_parsing_html_bs:')
+    # ex_7_parsing_html_bs()
+
+    # print('\nOutput of ex_8_getting_text_bs:')
+    # ex_8_getting_text_bs()
+
+    print('\nOutput of ex_9_hyperlinks_bs:')
+    ex_9_hyperlinks_bs()
+
