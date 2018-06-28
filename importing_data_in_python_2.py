@@ -1,16 +1,19 @@
-import numpy as np
 import matplotlib.pyplot as plt
 from pprint import pprint as pp
-from pathlib import Path
 import pandas as pd
 from urllib.request import urlretrieve, urlopen, Request
 import requests
 from bs4 import BeautifulSoup
 import json
+import tweepy
+from api_keys import get_api_key
+from twitter import MyStreamListener
 
 
 pd.options.display.max_columns = 27
 
+omdb_api_key, *_ = get_api_key('omdb')
+tw_api_key, tw_api_secret, tw_access_token, tw_access_token_secret, _ = get_api_key('twitter')
 
 # Importing data from the Internet
 # The web is a rich source of data from which you can extract various types of insights and findings. In this chapter,
@@ -337,14 +340,85 @@ def ex_10_json():
 
 def lesson_4_api():
     """
-
+    How to use an api
     :return:
     """
-    url = 'http://www.omdbapi.com/?t=hackers&apikey='
+    url = f'http://www.omdbapi.com/?t=hackers&apikey={omdb_api_key}'
     r = requests.get(url)
     json_data = r.json()
     for k, v in json_data.items():
         print(f'{k}: {v}')
+
+
+def ex_11_api_requests():
+    """
+    API requests
+    Now it's your turn to pull some movie data down from the Open Movie Database (OMDB) using their API. The movie
+    you'll query the API about is The Social Network. Recall that, in the video, to query the API about the movie
+    Hackers, Hugo's query string was 'http://www.omdbapi.com/?t=hackers' and had a single argument t=hackers.
+
+    Note: recently, OMDB has changed their API: you now also have to specify an API key. This means you'll have to add
+    another argument to the URL: apikey=xxxxxxxx.
+    :return:
+    """
+    # Assign URL to variable: url
+    url = f'http://www.omdbapi.com/?apikey={omdb_api_key}&t=social+network'
+
+    # Package the request, send the request and catch the response: r
+    r = requests.get(url)
+
+    # Print the text of the response
+    print(r.text)
+
+    # Decode the JSON data into a dictionary: json_data
+    json_data = r.json()
+
+    # Print each key-value pair in json_data
+    for k in json_data.keys():
+        print(k + ': ', json_data[k])
+
+
+def ex_12_wikipedia_api():
+    """
+    Checking out the Wikipedia API
+    You're doing so well and having so much fun that we're going to throw one more API at you: the Wikipedia API
+    (documented here). You'll figure out how to find and extract information from the Wikipedia page for Pizza. What
+    gets a bit wild here is that your query will return nested JSONs, that is, JSONs with JSONs, but Python can handle
+    that because it will translate them into dictionaries within dictionaries.
+    :return:
+    """
+    # Assign URL to variable: url
+    url = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles=pizza'
+
+    # Package the request, send the request and catch the response: r
+    r = requests.get(url)
+
+    # Decode the JSON data into a dictionary: json_data
+    json_data = r.json()
+
+    # Print the Wikipedia page extract
+    pizza_extract = json_data['query']['pages']['24768']['extract']
+    print(pizza_extract)
+
+
+def lesson_5_twitter():
+    """
+
+    :return:
+    """
+    consumer_key = tw_api_key
+    consumer_secret = tw_api_secret
+    access_token = tw_access_token
+    access_token_secret = tw_access_token_secret
+
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+
+    l = MyStreamListener()
+    stream = tweepy.Stream(auth, l)
+    stream.filter(track=['apples', 'oranges'])
+
+    print(stream)
 
 
 if __name__ == '__main__':
@@ -388,5 +462,14 @@ if __name__ == '__main__':
     # print('\nOutput of ex_10_json:')
     # ex_10_json()
 
-    print('\nOutput of lesson_4_api:')
-    lesson_4_api()
+    # print('\nOutput of lesson_4_api:')
+    # lesson_4_api()
+
+    # print('\nOutput of ex_11_api_requests:')
+    # ex_11_api_requests()
+
+    # print('\nOutput of ex_12_wikipedia_api:')
+    # ex_12_wikipedia_api()
+
+    print('\nOutput of lesson_5_twitter:')
+    lesson_5_twitter()
