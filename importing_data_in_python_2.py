@@ -1,16 +1,19 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 from pprint import pprint as pp
 import pandas as pd
 from urllib.request import urlretrieve, urlopen, Request
 import requests
 from bs4 import BeautifulSoup
 import json
+import re
 import tweepy
 from api_keys import get_api_key
 from twitter import MyStreamListener
 
 
 pd.options.display.max_columns = 27
+pd.options.display.max_colwidth = 280
 
 omdb_api_key, *_ = get_api_key('omdb')
 tw_api_key, tw_api_secret, tw_access_token, tw_access_token_secret, _ = get_api_key('twitter')
@@ -403,7 +406,24 @@ def ex_12_wikipedia_api():
 
 def lesson_5_twitter():
     """
+    API Authentication
+    The package tweepy is great at handling all the Twitter API OAuth Authentication details for you. All you need to
+    do is pass it your authentication credentials. In this interactive exercise, we have created some mock
+    authentication credentials (if you wanted to replicate this at home, you would need to create a Twitter App as Hugo
+    detailed in the video). Your task is to pass these credentials to tweepy's OAuth handler.
+    https://apps.twitter.com/
 
+    Streaming tweets
+    Now that you have set up your authentication credentials, it is time to stream some tweets! We have already defined
+    the tweet stream listener class, MyStreamListener, just as Hugo did in the introductory video. You can find the code
+    for the tweet stream listener class here.
+    (https://gist.github.com/hugobowne/18f1c0c0709ed1a52dc5bcd462ac69f4)
+
+    Your task is to create the Stream object and to filter tweets according to particular keywords.
+
+    Load and explore your Twitter data
+    Now that you've got your Twitter data sitting locally in a text file, it's time to explore it! This is what you'll
+    do in the next few interactive exercises. In this exercise, you'll read the Twitter data into a list: tweets_data.
     :return:
     """
     consumer_key = tw_api_key
@@ -416,9 +436,97 @@ def lesson_5_twitter():
 
     l = MyStreamListener()
     stream = tweepy.Stream(auth, l)
-    stream.filter(track=['apples', 'oranges'])
+    stream.filter(track=['clinton', 'trump', 'sanders', 'cruz'])
 
-    print(stream)
+    # String of path to file: tweets_data_path
+    tweets_data_path = 'tweets.txt'
+
+    # Initialize empty list to store tweets: tweets_data
+    tweets_data = []
+
+    # Open connection to file
+    tweets_file = open(tweets_data_path, "r")
+
+    # Read in tweets and store in list: tweets_data
+    for line in tweets_file:
+        tweet = json.loads(line)
+        tweets_data.append(tweet)
+
+    # Close connection to file
+    tweets_file.close()
+
+    # Print the keys of the first tweet dict
+    print(tweets_data[0].keys())
+    return tweets_data
+
+
+def word_in_text(word, tweet):
+    word = word.lower()
+    text = tweet.lower()
+    match = re.search(word, text)
+
+    if match:
+        return True
+    return False
+
+
+def ex_13_twitter_df():
+    """
+    Twitter data to DataFrame
+    Now you have the Twitter data in a list of dictionaries, tweets_data, where each dictionary corresponds to a single
+    tweet. Next, you're going to extract the text and language of each tweet. The text in a tweet, t1, is stored as the
+    value t1['text']; similarly, the language is stored in t1['lang']. Your task is to build a DataFrame in which each
+    row is a tweet and the columns are 'text' and 'lang'.
+
+    A little bit of Twitter text analysis
+    Now that you have your DataFrame of tweets set up, you're going to do a bit of text analysis to count how many
+    tweets contain the words 'clinton', 'trump', 'sanders' and 'cruz'. In the pre-exercise code, we have defined the
+    following function word_in_text(), which will tell you whether the first argument (a word) occurs within the 2nd
+    argument (a tweet).
+
+    Plotting your Twitter data
+    Now that you have the number of tweets that each candidate was mentioned in, you can plot a bar chart of this data.
+    You'll use the statistical data visualization library seaborn, which you may not have seen before, but we'll guide
+    you through. You'll first import seaborn as sns. You'll then construct a barplot of the data using sns.barplot,
+    passing it two arguments:
+    http://seaborn.pydata.org/
+
+    1) a list of labels and
+    2) a list containing the variables you wish to plot (clinton, trump and so on.)
+
+    Hopefully, you'll see that Trump was unreasonably represented! We have already run the previous exercise solutions
+    in your environment.
+    :return:
+    """
+    tweets_data = lesson_5_twitter()
+    # Build DataFrame of tweet texts and languages
+    df = pd.DataFrame(tweets_data, columns=['text', 'lang'])
+
+    # Print head of DataFrame
+    pp(df.head())
+
+    # Initialize list to store tweet counts
+    [clinton, trump, sanders, cruz] = [0, 0, 0, 0]
+
+    # Iterate through df, counting the number of tweets in which
+    # each candidate is mentioned
+    for index, row in df.iterrows():
+        clinton += word_in_text('clinton', row['text'])
+        trump += word_in_text('trump', row['text'])
+        sanders += word_in_text('sanders', row['text'])
+        cruz += word_in_text('cruz', row['text'])
+
+    print(f'Clinton: {clinton}\nTrump: {trump}\nSanders: {sanders}\nCruz: {cruz}')
+    # Set seaborn style
+    sns.set(color_codes=True)
+
+    # Create a list of labels:cd
+    cd = ['clinton', 'trump', 'sanders', 'cruz']
+
+    # Plot histogram
+    ax = sns.barplot(cd, [clinton, trump, sanders, cruz])
+    ax.set(ylabel="count")
+    plt.show()
 
 
 if __name__ == '__main__':
@@ -471,5 +579,9 @@ if __name__ == '__main__':
     # print('\nOutput of ex_12_wikipedia_api:')
     # ex_12_wikipedia_api()
 
-    print('\nOutput of lesson_5_twitter:')
-    lesson_5_twitter()
+    # print('\nOutput of lesson_5_twitter:')
+    # lesson_5_twitter()
+
+    print('\nOutput of ex_13_twitter:')
+    twitter_data = lesson_5_twitter()
+    ex_13_twitter_df()
