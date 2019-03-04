@@ -2,3 +2,6 @@
 __pycache__/*
 .idea/*
 DataCamp-master/*
+data/intro_to_databases_in_python/census.csv
+data/intro_to_databases_in_python/census.sqlite
+data/intro_to_databases_in_python/employees.sqlite
