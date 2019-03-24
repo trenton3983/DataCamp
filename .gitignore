@@ -10,7 +10,6 @@ data/*
 *.jpeg
 *.gif
 *.db3
-*.jpg
 *.pkl
 *.url
 *.sas*
