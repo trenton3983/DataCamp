@@ -12,3 +12,5 @@ DataCamp-master/*
 *.pkl
 *.url
 *.sas*
+*.zip
+*.sql
