@@ -4,6 +4,13 @@ __pycache__/*
 DataCamp-master/*
 data/*/*/*.sql
 data/*/*/*.pickle
+Images/*/gradient_descent_gif/*
+Images/*data_visualization*/480*
+Images/*data_visualization*/640*
+Images/*data_visualization*/axis_limits*
+Images/*data_visualization*/ps09*
+Images/*data_visualization*/sine_m*
+Images/*data_visualization*/xlim_and*
 
 *.csv
 *.sqlite
