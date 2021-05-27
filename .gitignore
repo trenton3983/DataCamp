@@ -1,6 +1,6 @@
-.ipynb_checkpoints/*
+.ipynb_checkpoints
 __pycache__/*
-.idea/*
+.idea
 DataCamp-master/*
 data/*/*/*.sql
 data/*/*/*.pickle
