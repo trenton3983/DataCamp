@@ -11,6 +11,7 @@ Images/*data_visualization*/axis_limits*
 Images/*data_visualization*/ps09*
 Images/*data_visualization*/sine_m*
 Images/*data_visualization*/xlim_and*
+data/*/archive
 
 *.csv
 *.sqlite
