@@ -1,5 +1,5 @@
 # from https://github.com/drivendataorg/box-plots-sklearn/blob/master/src/data/multilabel.py
-# these functions are used in 2024-01-19_school_budgeting_with_maching_learning_in_python
+# these functions are used in 2024-01-19_school_budgeting_with_machine_learning_in_python
 
 from warnings import warn
 
