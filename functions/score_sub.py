@@ -7,6 +7,7 @@ import numpy as np
 
 BOX_PLOTS_COLUMN_INDICES = [range(0, 37), range(37, 48), range(48, 51), range(51, 76), range(76, 79), range(79, 82), range(82, 87), range(87, 96), range(96, 104)]
 
+
 def _multi_multi_log_loss(predicted, actual, class_column_indices=BOX_PLOTS_COLUMN_INDICES, eps=1e-15):
     """ Multi class version of Logarithmic Loss metric as implemented on
     DrivenData.org
